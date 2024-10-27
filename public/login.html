@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"> <!-- Подключение CSS -->
+    <title>Логин</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Вход в систему</h1>
+    <form id="loginForm" action="/auth/login" method="POST">
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn">Войти</button>
+    </form>
+    <p>Нет аккаунта? <a href="register.html" class="link">Зарегистрироваться</a></p>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await axios.post('/auth/login', { username, password });
+                alert('Успешный вход!');
+                // Перенаправление на главную страницу после логина
+                window.location.href = '/home';
+            } catch (error) {
+              const message = error.response?.data?.message || 'Ошибка логина: неизвестная ошибка';
+              alert(message);
+            }
+        });
+    </script>
+</body>
+</html>

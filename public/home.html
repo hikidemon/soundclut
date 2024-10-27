@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Feed</title>
+ 
+    <style >
+/* Reset basic styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f8f8f8;
+}
+
+/* Top Navigation Bar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 10px 20px;
+  color: white;
+}
+
+.navbar-logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.search-bar {
+  width: 40%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.navbar-links a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.navbar-links a:hover {
+  text-decoration: underline;
+}
+
+/* Main Content Layout */
+.content {
+  display: flex;
+  padding: 20px;
+}
+
+.sidebar {
+  width: 20%;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+  margin-bottom: 15px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+.sidebar a {
+  color: #333;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}
+
+/* Feed Section */
+.feed {
+  width: 70%;
+  margin-left: 20px;
+}
+
+.feed h2 {
+  margin-bottom: 20px;
+}
+
+.post {
+  background-color: #fff;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.post-author {
+  font-size: 14px;
+  color: #666;
+}
+
+.post-tags {
+  font-size: 12px;
+  color: #999;
+}
+
+.like-button, .comment-button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #ff7700;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.like-button:hover, .comment-button:hover {
+  background-color: #e06600;
+}
+
+
+    </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-logo">MusicFeed</div>
+    <input type="text" class="search-bar" placeholder="Search for tracks, artists, and more">
+    <div class="navbar-links">
+      <a href="#home">Home</a>
+      <a href="#feed">Feed</a>
+      <a href="#profile">Profile</a>
+    </div>
+  </header>
+
+  <main class="content">
+    <aside class="sidebar">
+      <h2>Explore</h2>
+      <ul>
+        <li><a href="#genres">Genres</a></li>
+        <li><a href="#trending">Trending</a></li>
+        <li><a href="#new">New Releases</a></li>
+      </ul>
+    </aside>
+
+    <section class="feed">
+      <h2>Feed</h2>
+      <div id="posts-container">
+        <div id="posts"></div>
+
+<!-- Тост для комментариев -->
+<div id="commentToast" style="display: none;">
+  <textarea id="commentText" placeholder="Введите комментарий..."></textarea>
+  <button id="sendCommentBtn">Отправить</button>
+  <button id="cancelCommentBtn">Отменить</button>
+</div>
+
+      </div>
+    </section>
+  </main>
+
+    <footer>
+        <p>&copy; 2024 Ваш Сервис</p>
+    </footer>
+    <script>
+      // Функция для загрузки постов из API и отображения их на странице
+      async function loadPosts() {
+        try {
+          const response = await fetch('/api/posts');
+          const posts = await response.json();
+  
+          const postsContainer = document.getElementById('posts-container');
+          postsContainer.innerHTML = ''; // Очистка контейнера перед загрузкой новых постов
+  
+          posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.classList.add('post');
+            
+            postElement.innerHTML = `
+              <h3 class="post-title">${post.title}</h3>
+              <p class="post-author">by ${post.author}</p>
+              <p class="post-tags">${post.tags}</p>
+              <button class="like-button" onclick="likePost(${post.id})">❤️ Like (${post.likes})</button>
+              <button class="comment-button" data-post-id="${post.id}">💬 Comment</button>
+
+            `;
+  
+            postsContainer.appendChild(postElement);
+          });
+        } catch (error) {
+          console.error('Error loading posts:', error);
+        }
+      }
+  
+      // Функция для лайка поста
+      async function likePost(postId) {
+        try {
+          await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
+          loadPosts(); // Обновляем список постов после лайка
+        } catch (error) {
+          console.error('Error liking post:', error);
+        }
+      }
+  
+      // Загрузить посты при загрузке страницы
+      document.addEventListener('DOMContentLoaded', loadPosts);
+      // Обработчик события для кнопки комментария
+document.addEventListener('click', async (event) => {
+  if (event.target.matches('.comment-button')) {
+    const postId = event.target.dataset.postId; // Получаем ID поста
+    showCommentToast(postId);
+  }
+});
+
+// Функция для отображения тоста с комментариями
+function showCommentToast(postId) {
+  const toast = document.getElementById('commentToast');
+  toast.style.display = 'block';
+
+  const sendCommentBtn = document.getElementById('sendCommentBtn');
+  const cancelCommentBtn = document.getElementById('cancelCommentBtn');
+  const commentText = document.getElementById('commentText');
+
+  // Обработчик для отправки комментария
+  sendCommentBtn.onclick = async () => {
+    const comment = commentText.value;
+
+    try {
+      const response = await fetch(`/api/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Комментарий отправлен:', data);
+        // Здесь вы можете обновить интерфейс для отображения нового комментария
+      } else {
+        const errorData = await response.json();
+        console.error('Ошибка при отправке комментария:', errorData);
+      }
+    } catch (error) {
+      console.error('Ошибка сети:', error);
+    }
+
+    // Закрываем тост
+    toast.style.display = 'none';
+    commentText.value = ''; // Сбрасываем текстовое поле
+  };
+
+  // Обработчик для отмены комментария
+  cancelCommentBtn.onclick = () => {
+    toast.style.display = 'none';
+    commentText.value = ''; // Сбрасываем текстовое поле
+  };
+}
+
+    </script>
+</body>
+</html>
