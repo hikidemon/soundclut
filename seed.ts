@@ -6,14 +6,14 @@ import Track from './src/models/Track'; // Убедитесь, что путь �
 async function seedDatabase() {
   try {
     // Синхронизация с базой данных
-    await sequelize.sync({ force: true }); // force: true удалит и заново создаст таблицы
+    await sequelize.sync({ force: true });
 
     // Создаем посты
     const posts = await Post.bulkCreate([
-      { title: 'Gothic Vibes', content: 'Dark, atmospheric beats.', likes: 10 },
-      { title: 'Summer Chill', content: 'Smooth tunes for relaxing evenings.', likes: 20 },
-      { title: 'Night Runner', content: 'Pumping beats for night drives.', likes: 15 },
-      { title: 'Sunrise Meditation', content: 'Melodic and calm for early mornings.', likes: 30 },
+    { title: 'Gothic Vibes', content: 'Dark, atmospheric beats.', musicFileUrl:'', likesCount: 10,repostCount: 0 ,userId:1},
+      { title: 'Summer Chill', content: 'Smooth tunes for relaxing evenings.', musicFileUrl:'' ,likesCount: 20 ,repostCount: 0, userId:2},
+      { title: 'Night Runner', content: 'Pumping beats for night drives.', musicFileUrl:'' ,likesCount: 15 ,repostCount: 0 ,userId:3},
+      { title: 'Sunrise Meditation', content: 'Melodic and calm for early mornings.',musicFileUrl:'' , likesCount: 30,repostCount: 0 ,userId:4 }
     ]);
 
     // Добавляем треки к постам
