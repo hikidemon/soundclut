@@ -4,274 +4,441 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Feed</title>
- 
-    <style >
-/* Reset basic styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    <style>
+        /* Reset basic styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f8f8f8;
+        }
+
+        /* Top Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 20px;
+            color: white;
+        }
+
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .search-bar {
+            width: 40%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .navbar-links a {
+            color: white;
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+        .navbar-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content Layout */
+        .content {
+            display: flex;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 20%;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 10px 0;
+        }
+
+        .sidebar a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Feed Section */
+        .feed {
+            width: 70%;
+            margin-left: 20px;
+            position: relative;
+        }
+
+        .feed h2 {
+            margin-bottom: 20px;
+        }
+
+        .post {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .post-author {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .post-content {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .like-button, .comment-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #ff7700;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .like-button:hover, .comment-button:hover {
+            background-color: #e06600;
+        }
+
+
+
+        .comments-panel {
+    position: absolute;
+    right: 300px; /* Start off-screen */
+    top: 0;
+    width: 300px;
+    height: 100%;
+    background-color: #f9f9f9; /* Light background color */
+    border-left: 1px solid #ccc;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    transition: right 0.3s;
+    display: flex;
+    margin-top: -20px;
+    margin-right: -14%;
+    
+    flex-direction: column;
+    opacity: 0; /* Make it invisible initially */
+    visibility: hidden; /* Hide it from the layout */
 }
 
-body {
-  font-family: Arial, sans-serif;
-  color: #333;
-  background-color: #f8f8f8;
+.comments-panel.open {
+    right: 0; /* Show when open */
+    opacity: 1; /* Make it visible */
+    visibility: visible; /* Allow it in the layout */
 }
 
-/* Top Navigation Bar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  padding: 10px 20px;
-  color: white;
+.comment-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
 }
 
-.navbar-logo {
-  font-size: 24px;
-  font-weight: bold;
+/* Style for comment bubbles */
+.comment-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 20px; /* Rounded corners for bubbles */
+    position: relative;
+    max-width: 80%; /* Limit width of comments */
 }
 
-.search-bar {
-  width: 40%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.navbar-links a {
-  color: white;
-  margin-left: 15px;
-  text-decoration: none;
-}
-
-.navbar-links a:hover {
-  text-decoration: underline;
-}
-
-/* Main Content Layout */
-.content {
-  display: flex;
-  padding: 20px;
-}
-
-.sidebar {
-  width: 20%;
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 4px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar h2 {
-  margin-bottom: 15px;
-}
-
-.sidebar ul {
-  list-style: none;
-}
-
-.sidebar li {
-  margin: 10px 0;
-}
-
-.sidebar a {
-  color: #333;
-  text-decoration: none;
-}
-
-.sidebar a:hover {
-  text-decoration: underline;
-}
-
-/* Feed Section */
-.feed {
-  width: 70%;
-  margin-left: 20px;
-}
-
-.feed h2 {
-  margin-bottom: 20px;
-}
-
-.post {
-  background-color: #fff;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-}
-
-.post-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.post-author {
-  font-size: 14px;
-  color: #666;
-}
-
-.post-tags {
-  font-size: 12px;
-  color: #999;
-}
-
-.like-button, .comment-button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background-color: #ff7700;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-}
-
-.like-button:hover, .comment-button:hover {
-  background-color: #e06600;
+/* Style for user comments */
+.comment-item.user {
+    background-color: #d1e7dd; /* Light green for user comments */
+    align-self: flex-end; /* Align to the right */
 }
 
 
+
+
+
+/* Style for other comments */
+.comment-item.other {
+    background-color: #f0f0f0; /* Light gray for others */
+    align-self: flex-start; /* Align to the left */
+}
+
+.comment-input {
+    width: calc(100% - 0px);
+    padding: 10px;
+    border-radius: 20px; /* Rounded input field */
+    border: 1px solid #ccc;
+    margin-top: 10px; /* Space above the input */
+}
+
+/* Button styles */
+.button-group {
+    display: flex;
+    justify-content: space-between; /* Space between buttons */
+    margin-top: 10px;
+}
+
+.button-group button {
+    flex: 1; /* Allow buttons to grow */
+    margin-bottom: 10px; /* Space between buttons */
+    padding: 10px;
+    border-radius: 20px; /* Rounded buttons */
+    border: none;
+    color: white; /* White text */
+    cursor: pointer;
+}
+
+.button-group .comment-submit {
+    background-color: #007bff; /* Primary button color */
+}
+
+ .comment-hide {
+    background-color: #dc3545; /* Secondary button color */
+   
+    margin-top: 20 px; /* Space between buttons */
+    padding: 10px;
+    border-radius: 20px; /* Rounded buttons */
+    border: none;
+    color: white; /* White text */
+    cursor: pointer;
+   
+    
+}
+
+.button-group .comment-submit:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.comment-hide:hover {
+    background-color: #c82333; /* Darker shade on hover */
+}
+     
     </style>
 </head>
 <body>
-  <header class="navbar">
+<header class="navbar">
     <div class="navbar-logo">MusicFeed</div>
     <input type="text" class="search-bar" placeholder="Search for tracks, artists, and more">
     <div class="navbar-links">
-      <a href="#home">Home</a>
-      <a href="#feed">Feed</a>
-      <a href="#profile">Profile</a>
+        <a href="#create">Create</a>
+        <a href="#home">Home</a>
+        <a href="#feed">Feed</a>
+        <a href="#profile">Profile</a>
     </div>
-  </header>
+</header>
 
-  <main class="content">
+<main class="content">
     <aside class="sidebar">
-      <h2>Explore</h2>
-      <ul>
-        <li><a href="#genres">Genres</a></li>
-        <li><a href="#trending">Trending</a></li>
-        <li><a href="#new">New Releases</a></li>
-      </ul>
+        <h2>Explore</h2>
+        <ul>
+            <li><a href="#genres">Genres</a></li>
+            <li><a href="#trending">Trending</a></li>
+            <li><a href="#new">New Releases</a></li>
+        </ul>
     </aside>
 
     <section class="feed">
-      <h2>Feed</h2>
-      <div id="posts-container">
-        <div id="posts"></div>
-
-<!-- Тост для комментариев -->
-<div id="commentToast" style="display: none;">
-  <textarea id="commentText" placeholder="Введите комментарий..."></textarea>
-  <button id="sendCommentBtn">Отправить</button>
-  <button id="cancelCommentBtn">Отменить</button>
-</div>
-
+        <h2>Feed</h2>
+        <div id="posts-container">
+            <!-- Posts will be dynamically loaded here -->
+        </div>
+        <div class="comments-panel" id="comments-panel">
+          <h3>Комментарии</h3>
+          <div class="comment-list" id="comment-list"></div>
+          <div class="input-area">
+              <input type="text" class="comment-input" id="comment-input" placeholder="Напишите комментарий...">
+              <div class="button-group">
+                  <button class="comment-submit" id="comment-submit">Отправить</button>
+                 
+              </div>
+          </div>
+          <button class="comment-hide" id="comment-hide">Скрыть комментарии</button>
       </div>
+      
     </section>
-  </main>
+</main>
 
-    <footer>
-        <p>&copy; 2024 Ваш Сервис</p>
-    </footer>
-    <script>
-      // Функция для загрузки постов из API и отображения их на странице
-      async function loadPosts() {
-        try {
-          const response = await fetch('/api/posts');
-          const posts = await response.json();
-  
-          const postsContainer = document.getElementById('posts-container');
-          postsContainer.innerHTML = ''; // Очистка контейнера перед загрузкой новых постов
-  
-          posts.forEach(post => {
-            const postElement = document.createElement('div');
-            postElement.classList.add('post');
-            
-            postElement.innerHTML = `
-              <h3 class="post-title">${post.title}</h3>
-              <p class="post-author">by ${post.author}</p>
-              <p class="post-tags">${post.tags}</p>
-              <button class="like-button" onclick="likePost(${post.id})">❤️ Like (${post.likes})</button>
-              <button class="comment-button" data-post-id="${post.id}">💬 Comment</button>
-
-            `;
-  
-            postsContainer.appendChild(postElement);
-          });
-        } catch (error) {
-          console.error('Error loading posts:', error);
-        }
-      }
-  
-      // Функция для лайка поста
-      async function likePost(postId) {
-        try {
-          await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
-          loadPosts(); // Обновляем список постов после лайка
-        } catch (error) {
-          console.error('Error liking post:', error);
-        }
-      }
-  
-      // Загрузить посты при загрузке страницы
-      document.addEventListener('DOMContentLoaded', loadPosts);
-      // Обработчик события для кнопки комментария
-document.addEventListener('click', async (event) => {
-  if (event.target.matches('.comment-button')) {
-    const postId = event.target.dataset.postId; // Получаем ID поста
-    showCommentToast(postId);
-  }
-});
-
-// Функция для отображения тоста с комментариями
-function showCommentToast(postId) {
-  const toast = document.getElementById('commentToast');
-  toast.style.display = 'block';
-
-  const sendCommentBtn = document.getElementById('sendCommentBtn');
-  const cancelCommentBtn = document.getElementById('cancelCommentBtn');
-  const commentText = document.getElementById('commentText');
-
-  // Обработчик для отправки комментария
-  sendCommentBtn.onclick = async () => {
-    const comment = commentText.value;
-
-    try {
-      const response = await fetch(`/api/posts/${postId}/comments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ comment }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Комментарий отправлен:', data);
-        // Здесь вы можете обновить интерфейс для отображения нового комментария
-      } else {
-        const errorData = await response.json();
-        console.error('Ошибка при отправке комментария:', errorData);
-      }
-    } catch (error) {
-      console.error('Ошибка сети:', error);
+<footer>
+    <p>&copy; 2024 Ваш Сервис</p>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    if (typeof axios === 'undefined') {
+        console.error("Axios failed to load. Check the network or URL.");
+    } else {
+        console.log("Axios loaded successfully.");
     }
 
-    // Закрываем тост
-    toast.style.display = 'none';
-    commentText.value = ''; // Сбрасываем текстовое поле
-  };
+    // Sample data for demonstration purposes
+    const samplePosts = [
+        {
+            id: 1,
+            title: "Song One",
+            user: { username: "Artist1" },
+            content: "This is the first song description.",
+            musicFileUrl: "https://www.example.com/music1.mp3",
+            likesCount: 10,
+            comments: [] // Initialize comments array
+        },
+        {
+            id: 2,
+            title: "Song Two",
+            user: { username: "Artist2" },
+            content: "This is the second song description.",
+            musicFileUrl: "https://www.example.com/music2.mp3",
+            likesCount: 20,
+            comments: [] // Initialize comments array
+        },
+        {
+            id: 3,
+            title: "Song Three",
+            user: { username: "Artist3" },
+            content: "This is the third song description.",
+            musicFileUrl: "https://www.example.com/music3.mp3",
+            likesCount: 15,
+            comments: [] // Initialize comments array
+        },
+        {
+            id: 4,
+            title: "Song Four",
+            user: { username: "Artist4" },
+            content: "This is the fourth song description.",
+            musicFileUrl: "https://www.example.com/music4.mp3",
+            likesCount: 8,
+            comments: [] // Initialize comments array
+        },
+    ];
 
-  // Обработчик для отмены комментария
-  cancelCommentBtn.onclick = () => {
-    toast.style.display = 'none';
-    commentText.value = ''; // Сбрасываем текстовое поле
-  };
-}
+    function loadPosts() {
+        const postsContainer = document.getElementById('posts-container');
+        postsContainer.innerHTML = ''; // Clear previous content
 
-    </script>
+        // Loop through each sample post and create a card
+        samplePosts.forEach(post => {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+
+            postDiv.innerHTML = `
+                <div class="post-title">${post.title}</div>
+                <div class="post-author">by ${post.user.username}</div>
+                <div class="post-content">${post.content}</div>
+                <audio controls>
+                    <source src="${post.musicFileUrl}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <div>
+                    <button class="like-button" data-id="${post.id}">Like (${post.likesCount})</button>
+                    <button class="comment-button" data-id="${post.id}">Comment</button>
+                </div>
+            `;
+
+            // Event listener for comment button
+            const commentButton = postDiv.querySelector('.comment-button');
+            commentButton.addEventListener('click', () => {
+                toggleComments(post.id);
+            });
+
+            postsContainer.appendChild(postDiv);
+        });
+    }
+    document.addEventListener('click', (event) => {
+    if (event.target.matches('.like-button')) {
+        const postId = event.target.dataset.id;
+        const post = samplePosts.find(p => p.id == postId);
+        
+        // Check if the user has already liked the post
+        if (post.hasLiked) {
+            // User already liked the post, so remove the like
+            post.likesCount -= 1; // Decrement like count
+            post.hasLiked = false; // Set like status to false
+            event.target.classList.remove('liked'); // Remove 'liked' class if you have any styling
+        } else {
+            // User has not liked the post yet, so add the like
+            post.likesCount += 1; // Increment like count
+            post.hasLiked = true; // Set like status to true
+            event.target.classList.add('liked'); // Add 'liked' class for styling
+        }
+
+        loadPosts(); // Reload posts to show updated likes
+    }
+
+    if (event.target.matches('.comment-button')) {
+        const postId = event.target.dataset.id;
+        showCommentsPanel(postId); // Show comments panel
+    }
+});
+
+    function toggleComments(postId) {
+        const commentsPanel = document.getElementById('comments-panel');
+        const commentList = document.getElementById('comment-list');
+        const commentInput = document.getElementById('comment-input');
+        const commentSubmit = document.getElementById('comment-submit');
+        const commentHide = document.getElementById('comment-hide');
+        const post = samplePosts.find(p => p.id === postId);
+
+        // Clear previous comments
+        commentList.innerHTML = '';
+        post.comments.forEach(comment => {
+            const commentItem = document.createElement('div');
+            commentItem.className = 'comment-item other';
+            commentItem.textContent = comment;
+            commentList.appendChild(commentItem);
+        });
+
+        // Show the comments panel
+        commentsPanel.classList.toggle('open');
+
+        // Handle comment submission
+        commentSubmit.onclick = function () {
+        const newComment = commentInput.value;
+        if (newComment) {
+            post.comments.push(newComment); // Add new comment to the post
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment-item user'; // User comment style
+            commentDiv.textContent = newComment;
+            commentList.appendChild(commentDiv);
+            commentInput.
+            
+            value = ''; // Clear input field
+        }}
+        // Hide comments panel
+        commentHide.onclick = function () {
+            commentsPanel.classList.remove('open');
+        };
+    }
+
+    window.onload = loadPosts;
+</script>
 </body>
 </html>
+я
