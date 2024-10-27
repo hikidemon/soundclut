@@ -18,7 +18,6 @@
             background-color: #f8f8f8;
         }
 
-
         /* Top Navigation Bar */
         .navbar {
             display: flex;
@@ -131,11 +130,9 @@
         }
 
         .like-button:hover, .comment-button:hover {
-            background-color: #655243;
+            background-color: #e06600;
         }
-        .like-button.liked {
-    background-color: #dc3545; /* Change color when liked */
-        }
+
 
 
         .comments-panel {
@@ -400,45 +397,39 @@
         showCommentsPanel(postId); // Show comments panel
     }
 });
-function loadComments(postId) {
-    const storedComments = JSON.parse(localStorage.getItem(`comments_${postId}`)) || [];
-    const commentList = document.getElementById('comment-list');
-    commentList.innerHTML = ''; // Очистить предыдущие комментарии
-
-    storedComments.forEach(comment => {
-        const commentDiv = document.createElement('div');
-        commentDiv.className = 'comment-item';
-        commentDiv.textContent = comment;
-        commentList.appendChild(commentDiv);
-    });
-}
 
     function toggleComments(postId) {
-    const commentsPanel = document.getElementById('comments-panel');
-    const commentInput = document.getElementById('comment-input');
-    const commentSubmit = document.getElementById('comment-submit');
-    const commentHide = document.getElementById('comment-hide');
+        const commentsPanel = document.getElementById('comments-panel');
+        const commentList = document.getElementById('comment-list');
+        const commentInput = document.getElementById('comment-input');
+        const commentSubmit = document.getElementById('comment-submit');
+        const commentHide = document.getElementById('comment-hide');
+        const post = samplePosts.find(p => p.id === postId);
 
-    // Загрузить комментарии для выбранного поста
-    loadComments(postId);
+        // Clear previous comments
+        commentList.innerHTML = '';
+        post.comments.forEach(comment => {
+            const commentItem = document.createElement('div');
+            commentItem.className = 'comment-item other';
+            commentItem.textContent = comment;
+            commentList.appendChild(commentItem);
+        });
 
-    // Показать панель комментариев
-    commentsPanel.classList.add('open');
+        // Show the comments panel
+        commentsPanel.classList.toggle('open');
 
-    // Добавить обработчик для кнопки отправки комментария
-    commentSubmit.onclick = function () {
-        const newComment = commentInput.value.trim();
+        // Handle comment submission
+        commentSubmit.onclick = function () {
+        const newComment = commentInput.value;
         if (newComment) {
-            const storedComments = JSON.parse(localStorage.getItem(`comments_${postId}`)) || [];
-            storedComments.push(newComment); // Добавить новый комментарий
-            localStorage.setItem(`comments_${postId}`, JSON.stringify(storedComments)); // Сохранить в Local Storage
-            
-            // Добавить новый комментарий в список
+            post.comments.push(newComment); // Add new comment to the post
             const commentDiv = document.createElement('div');
-            commentDiv.className = 'comment-item other';
+            commentDiv.className = 'comment-item user'; // User comment style
             commentDiv.textContent = newComment;
-            document.getElementById('comment-list').appendChild(commentDiv);
-            commentInput.value = ''; // Очистить поле ввода
+            commentList.appendChild(commentDiv);
+            commentInput.
+            
+            value = ''; // Clear input field
         }}
         // Hide comments panel
         commentHide.onclick = function () {
@@ -450,3 +441,4 @@ function loadComments(postId) {
 </script>
 </body>
 </html>
+я
