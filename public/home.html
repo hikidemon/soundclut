@@ -10,12 +10,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            scrollbar-width: none; 
         }
 
         body {
             font-family: Arial, sans-serif;
             color: #333;
             background-color: #f8f8f8;
+            scrollbar-width: none; 
         }
 
         /* Top Navigation Bar */
@@ -51,10 +53,7 @@
         }
 
         /* Main Content Layout */
-        .content {
-            display: flex;
-            padding: 20px;
-        }
+    
 
         .sidebar {
             width: 20%;
@@ -85,17 +84,6 @@
             text-decoration: underline;
         }
 
-        /* Feed Section */
-        .feed {
-            width: 70%;
-            margin-left: 20px;
-            position: relative;
-        }
-
-        .feed h2 {
-            margin-bottom: 20px;
-        }
-
         .post {
             background-color: #fff;
             padding: 15px;
@@ -122,7 +110,7 @@
         .like-button, .comment-button {
             margin-top: 10px;
             padding: 5px 10px;
-            background-color: #ff7700;
+            background-color: #12adb2;
             border: none;
             border-radius: 4px;
             color: white;
@@ -130,29 +118,30 @@
         }
 
         .like-button:hover, .comment-button:hover {
-            background-color: #e06600;
+            background-color: #12595b;
         }
 
 
 
-        .comments-panel {
-    position: absolute;
-    right: 300px; /* Start off-screen */
-    top: 0;
-    width: 300px;
-    height: 100%;
-    background-color: #f9f9f9; /* Light background color */
-    border-left: 1px solid #ccc;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    transition: right 0.3s;
-    display: flex;
-    margin-top: -20px;
-    margin-right: -14%;
-    
-    flex-direction: column;
-    opacity: 0; /* Make it invisible initially */
-    visibility: hidden; /* Hide it from the layout */
+    .comments-panel {
+        position: fixed;
+        right: 300px; /* Start off-screen */
+        top: 0;
+        width: 300px;
+        height: 95%;
+        background-color: #f9f9f9; /* Light background color */
+        border-left: 1px solid #ccc;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        transition: right 0.3s;
+        display: flex;
+        margin-top: 3.5%;
+        margin-right: 0;
+        
+        flex-direction: column;
+        opacity: 0; /* Make it invisible initially */
+        visibility: hidden; /* Hide it from the layout */
+        scrollbar-width: none; 
 }
 
 .comments-panel.open {
@@ -162,11 +151,14 @@
 }
 
 .comment-list {
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: 70%;
+    overflow-y: scroll; 
     margin-bottom: 20px;
     padding: 10px;
+    scrollbar-width: none; 
+   
 }
+
 
 /* Style for comment bubbles */
 .comment-item {
@@ -174,7 +166,8 @@
     padding: 10px;
     border-radius: 20px; /* Rounded corners for bubbles */
     position: relative;
-    max-width: 80%; /* Limit width of comments */
+    max-width: 90%; /* Limit width of comments */
+    word-wrap: break-word;
 }
 
 /* Style for user comments */
@@ -199,6 +192,10 @@
     border-radius: 20px; /* Rounded input field */
     border: 1px solid #ccc;
     margin-top: 10px; /* Space above the input */
+    word-wrap: break-word;
+    overflow-y: auto; /* Прокрутка по вертикали, если текст превышает высоту */
+    box-sizing: border-box;
+    
 }
 
 /* Button styles */
@@ -219,11 +216,11 @@
 }
 
 .button-group .comment-submit {
-    background-color: #007bff; /* Primary button color */
+    background-color: #12adb2; /* Primary button color */
 }
 
  .comment-hide {
-    background-color: #dc3545; /* Secondary button color */
+    background-color:  #12adb2; /* Secondary button color */
    
     margin-top: 20 px; /* Space between buttons */
     padding: 10px;
@@ -236,13 +233,47 @@
 }
 
 .button-group .comment-submit:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+    background-color:  #12595b; /* Darker shade on hover */
 }
 
 .comment-hide:hover {
-    background-color: #c82333; /* Darker shade on hover */
+    background-color:  #12595b;  /* Darker shade on hover */
 }
-     
+.input-area{
+    margin-bottom: 0%;
+}
+.content {
+    height: 100vh; /* Высота всего окна */
+    display: flex;
+    padding: 20px;
+}
+
+
+
+.feed {
+    flex: 1; /* Основной контент займет оставшееся пространство */
+    scrollbar-width: none; 
+    overflow-y: auto; /* Прокрутка для постов */
+    width: 70%;
+    margin-left: 20px;
+    position: relative;
+   
+}
+
+
+#posts-container {
+    /* Задайте стиль контейнера для постов, если необходимо */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+.comments-panel {
+    /* Стили для панели комментариев */
+    background-color: #f9f9f9; /* Цвет фона */
+    padding: 10px;
+    border: 1px solid #ccc; /* Рамка */
+}
+
+
     </style>
 </head>
 <body>
@@ -268,29 +299,26 @@
     </aside>
 
     <section class="feed">
-        <h2>Feed</h2>
-        <div id="posts-container">
+   
+        <div  id="posts-container">
             <!-- Posts will be dynamically loaded here -->
         </div>
         <div class="comments-panel" id="comments-panel">
-          <h3>Комментарии</h3>
-          <div class="comment-list" id="comment-list"></div>
-          <div class="input-area">
-              <input type="text" class="comment-input" id="comment-input" placeholder="Напишите комментарий...">
-              <div class="button-group">
-                  <button class="comment-submit" id="comment-submit">Отправить</button>
-                 
-              </div>
-          </div>
-          <button class="comment-hide" id="comment-hide">Скрыть комментарии</button>
-      </div>
-      
+            <h3>Комментарии</h3>
+            <div class="comment-list" id="comment-list"></div>
+            <div class="input-area">
+                <input type="text" class="comment-input" id="comment-input" placeholder="Напишите комментарий...">
+                <div class="button-group">
+                    <button class="comment-submit" id="comment-submit">Отправить</button>
+                </div>
+            </div>
+            <button class="comment-hide" id="comment-hide">Скрыть комментарии</button>
+        </div>
     </section>
 </main>
 
-<footer>
-    <p>&copy; 2024 Ваш Сервис</p>
-</footer>
+
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     if (typeof axios === 'undefined') {
@@ -398,7 +426,7 @@
     }
 });
 
-    function toggleComments(postId) {
+async function toggleComments(postId) {
         const commentsPanel = document.getElementById('comments-panel');
         const commentList = document.getElementById('comment-list');
         const commentInput = document.getElementById('comment-input');
@@ -408,37 +436,51 @@
 
         // Clear previous comments
         commentList.innerHTML = '';
-        post.comments.forEach(comment => {
+        try {
+        const response = await fetch(`/comments/${postId}`);
+        const comments = await response.json();
+        comments.forEach(comment => {
             const commentItem = document.createElement('div');
             commentItem.className = 'comment-item other';
-            commentItem.textContent = comment;
+            commentItem.textContent = comment.text;
             commentList.appendChild(commentItem);
         });
-
+    } catch (error) {
+        console.error('Error loading comments:', error);
+    }
+        
         // Show the comments panel
         commentsPanel.classList.toggle('open');
 
         // Handle comment submission
-        commentSubmit.onclick = function () {
+        commentSubmit.onclick = async function () {
         const newComment = commentInput.value;
         if (newComment) {
-            post.comments.push(newComment); // Add new comment to the post
-            const commentDiv = document.createElement('div');
-            commentDiv.className = 'comment-item user'; // User comment style
-            commentDiv.textContent = newComment;
-            commentList.appendChild(commentDiv);
-            commentInput.
-            
-            value = ''; // Clear input field
+       
+            try {
+                // Сохраняем комментарий на сервере
+                await fetch('/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ postId, comment: newComment })
+                });
+
+                // Добавляем новый комментарий в список
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment-item user';
+                commentDiv.textContent = newComment;
+                commentList.appendChild(commentDiv);
+                commentInput.value = ''; // Очищаем поле ввода
+            } catch (error) {
+                console.error('Error saving comment:', error);
+            }
         }}
         // Hide comments panel
         commentHide.onclick = function () {
             commentsPanel.classList.remove('open');
         };
     }
-
-    window.onload = loadPosts;
+    loadPosts(); 
 </script>
 </body>
 </html>
-я
